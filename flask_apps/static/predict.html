@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Dave Greeting App</title>
+    <style>
+        * {
+            font=size:30px;
+        }
+    </style>
+</head>
+<body>
+    <input id="image-selector" type="file"/> 
+    <button id="predict-button">Predict</button>
+    <p style="font-weight:bold">Predictions</p><!-- where predictions are displayed-->
+    <p>Dog: <span id="dog-prediction"></span></p>
+    <p>Cat: <span id="cat-prediction"></span></p>
+    <img id="selected-image" src=""/> <!--image selected-->
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> <!-- import jquery in script tag-->
+    <script>
+        let base64Image; 
+        $("#image-selector").change(function() { 
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let dataURL = reader.result;
+                $("#selected-image").attr("src", dataURL);
+                base64Image = dataURL.replace("data:image/jpg;base64,","");
+                console.log(base64Image);
+            }
+            reader.readAsDataURL($("#image-selector")[0].files[0]);
+            $("#dog-prediction").text("");
+            $("#cat-prediction").text("");
+        });
+        
+        $("#predict-button").click(function(event){
+           let message = {
+               image: base64Image
+           }
+           console.log(message);
+           $.post("http://127.0.0.1:5000/predict", JSON.stringify(message), function(response){
+               $("#dog-prediction").text(response.prediction.dog.toFixed(6));
+               $("#cat-prediction").text(response.prediction.cat.toFixed(6));
+               console.log(response);
+           });
+        });
+    </script>
+</body>
+</html>
+       
+    <!-- first instantiate base64 variable
+grab image selector and call Jquery on change
+change specifies how to handle file
+initialize reader file. read content of files
+set onload handler for reader. 
+first initialize dataURL as reader.result. - image data is set as a URL
+selected image is then on the page
+base64Image is now on the page
+load base 64 images to the file.
+
+First: load selected image as readAsDataURL, load event occurs which calls in onload
+Second: clear out text afterwards if we load in new images
+
+Predict:
+First: when a click event occurs, define message function
+base64image is brought in
+predict responds with JSON. that's why both are called.
+toFixed rounds decimal to 6 points. -->
