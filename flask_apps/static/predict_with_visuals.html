@@ -36,7 +36,7 @@
             $("#pie-chart").empty();
         });
         
-        $("#predict-button").click(function(event){
+        $("#predict-button").click(function(){
            let message = {
                image: base64Image
            }
@@ -51,7 +51,7 @@
                
                console.log("response.prediction originally looks like this:")
                console.log(response.prediction)
-               console.log("response.prediction is then transformed to the precitions object, " + "whhich looks like this:")
+               console.log("response.prediction is then transformed to the precitions object, " + "which looks like this:")
                console.log(predictions)
                
                let cf = crossfilter(predictions);
